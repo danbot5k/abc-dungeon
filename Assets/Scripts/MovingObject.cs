@@ -4,17 +4,18 @@ using UnityEngine;
 
 public abstract class MovingObject : MonoBehaviour {
 
-    public float moveSpeed = 30f;
+    public float moveTime = 0.1f;
     public LayerMask blockingLayer;
 
-    private Rigidbody2D rb2d;
-    private BoxCollider2D boxCollider;
-
+    Rigidbody2D rb2d;
+    BoxCollider2D boxCollider;
+    float inverseMoveTime;
 
 
     protected virtual void Start () {
         rb2d = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
+        inverseMoveTime = 1f / moveTime;
 	}
 
     protected bool Move(int horizontal, int vertical, out RaycastHit2D hit) {
@@ -34,12 +35,12 @@ public abstract class MovingObject : MonoBehaviour {
     }
 
     protected IEnumerator SmoothMovement(Vector3 end) {
-        float remainingDistance = (transform.position - end).magnitude;
-        while(remainingDistance > float.Epsilon) {
+        float sqrRemainingDistance = (transform.position - end).sqrMagnitude;
+        while(sqrRemainingDistance > float.Epsilon) {
             
-            Vector3 newPosition = Vector3.MoveTowards(rb2d.position, end, (moveSpeed * Time.deltaTime));
+            Vector3 newPosition = Vector3.MoveTowards(rb2d.position, end, inverseMoveTime * Time.deltaTime);
             rb2d.MovePosition(newPosition);
-            remainingDistance = (transform.position - end).magnitude;
+            sqrRemainingDistance = (transform.position - end).sqrMagnitude;
             yield return null;
         }
     }
