@@ -4,9 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-
 public class GameController : MonoBehaviour {
-
     public static GameController instance = null;
     public int playerHealth = 100;
     public float turnDelay = .9f, levelStartDelay = 1f;
@@ -20,7 +18,6 @@ public class GameController : MonoBehaviour {
     private List<EnemyController> enemies;
     private bool enemiesMoving = false, settingUp = false;
 
-    // Use this for initialization
     void Awake () {
         //singleton code
         if (instance == null) {
@@ -32,13 +29,17 @@ public class GameController : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
         enemies = new List<EnemyController>();
         bc = GetComponent<BoardController>();
-        InitGame();
-        Debug.Log("End of the awake call!"); 	
+        
 	}
+
+    void Start() {
+        InitGame();
+    }
 	
     void OnLevelWasLoaded(int index) {
-        level++;
-        InitGame();
+        if (level > 1) {
+            InitGame();
+        }
     }
 
     void InitGame() {
@@ -70,7 +71,6 @@ public class GameController : MonoBehaviour {
         enemies.Remove(script);
     }
 
-
     IEnumerator MoveEnemies() {
         enemiesMoving = true;
         yield return new WaitForSeconds(turnDelay);
@@ -85,11 +85,6 @@ public class GameController : MonoBehaviour {
         enemiesMoving = false;
     }
 
-    void OnLevelWasLoaded() {
-        Debug.Log("A new scene loaded!");
-     //   InitGame();
-    }
-
 
     public void ActivateLadder() {
         bc.ActivateLadder();
@@ -97,11 +92,12 @@ public class GameController : MonoBehaviour {
     }
 
     public void Restart() {
+        level++;
         Invoke("RealRestart", 1f);
     }
 
     void RealRestart() {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 
     public void GameOver() {
