@@ -8,6 +8,7 @@ public class PlayerController : MovingObject {
 
     public int healthPerPotion, attack;
     public Slider healthSlider;
+    public Image[] inventory = new Image[3];
     public AudioClip move1, pickupSound1, ladderSound, ladderFindSound, playerHurtSound1, playerAttackSound1; 
 
     private Animator animator;
@@ -122,6 +123,8 @@ public class PlayerController : MovingObject {
             GameController.instance.Restart();
         }
         if (other.tag == "Tablet") {
+            Animator anim = inventory[tabletCount].GetComponent<Animator>();
+            anim.SetTrigger("InventoryAdd");
             tabletCount++;
             AudioController.instance.PlaySingle(pickupSound1);
             Destroy(other.gameObject);
