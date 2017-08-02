@@ -7,11 +7,11 @@ public class CameraController : MonoBehaviour {
     public Transform playerPosition;
     public float CamToLadderTime;
 
-    private Vector3 offset;
+    private Vector3 offset = new Vector3(0f,0f,-10f);
     private bool showingLadder = false;
 
 	void Start () {
-        offset = transform.position - playerPosition.position;
+        //offset = transform.position - playerPosition.position;
 	}
 	
 	void LateUpdate () {
@@ -21,6 +21,10 @@ public class CameraController : MonoBehaviour {
             //transform.position = GameObject.FindGameObjectWithTag("Ladder").transform.position + offset;
         }
 	}
+
+    public void SetCamToPlayer() {
+        transform.position = playerPosition.position + offset;
+    }
 
     public void MoveCamToLadder () {
         GameController.instance.movingCam = true;
